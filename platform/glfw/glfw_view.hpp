@@ -31,7 +31,7 @@ public:
     float getPixelRatio() const;
 
     void setMap(mbgl::Map*);
-    
+
     void setRenderFrontend(GLFWRendererFrontend*);
 
     mbgl::gfx::RendererBackend& getRendererBackend();
@@ -53,7 +53,7 @@ public:
     void setWindowTitle(const std::string&);
 
     void run();
-    
+
     void invalidate();
 
     mbgl::Size getSize() const;
@@ -108,6 +108,7 @@ private:
 
 private:
     void toggle3DExtrusions(bool visible);
+    void toggleModels(bool visible);
 
     mbgl::Map* map = nullptr;
     GLFWRendererFrontend* rendererFrontend = nullptr;
@@ -123,6 +124,7 @@ private:
     bool rotating = false;
     bool pitching = false;
     bool show3DExtrusions = false;
+    bool showModels = false;
 
     // Frame timer
     int frames = 0;

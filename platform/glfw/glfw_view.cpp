@@ -3,6 +3,7 @@
 #include "glfw_renderer_frontend.hpp"
 #include "ny_route.hpp"
 #include "test_writer.hpp"
+#include "model_layer.hpp"
 
 #include <mbgl/annotation/annotation.hpp>
 #include <mbgl/gfx/backend.hpp>
@@ -105,6 +106,19 @@ void addFillExtrusionLayer(mbgl::style::Style &style, bool visible) {
     extrusionLayer->setFillExtrusionBase(PropertyExpression<float>(get("min_height")));
     style.addLayer(std::move(extrusionLayer));
 }
+
+void addModelLayer(mbgl::style::Style &style, bool visible) {
+    using namespace mbgl::style;
+    using namespace mbgl::style::expression::dsl;
+
+    if (auto layer = style.getLayer("3d-models")) {
+        layer->setVisibility(VisibilityType(!visible));
+        return;
+    }
+
+    auto modelLayer = std::make_unique<CustomLayer>("3d-models", std::make_unique<custom::ModelLayer>());
+    style.addLayer(std::move(modelLayer));
+}
 } // namespace
 
 void glfwError(int error, const char *description) {
@@ -190,6 +204,7 @@ GLFWView::GLFWView(bool fullscreen_, bool benchmark_, const mbgl::ResourceOption
     printf("\n");
     printf("================================================================================\n");
     printf("\n");
+    printf("- Press `V` to enable 3D models layer\n");
     printf("- Press `S` to cycle through bundled styles\n");
     printf("- Press `X` to reset the transform\n");
     printf("- Press `N` to reset north\n");
@@ -369,6 +384,9 @@ void GLFWView::onKey(GLFWwindow *window, int key, int /*scancode*/, int action, 
         } break;
         case GLFW_KEY_E:
             view->toggle3DExtrusions(!view->show3DExtrusions);
+            break;
+        case GLFW_KEY_V:
+            view->toggleModels(!view->showModels);
             break;
         case GLFW_KEY_D: {
             static const std::vector<mbgl::LatLngBounds> bounds = {
@@ -981,11 +999,20 @@ void GLFWView::onDidFinishLoadingStyle() {
     if (show3DExtrusions) {
         toggle3DExtrusions(show3DExtrusions);
     }
+
+    if (showModels) {
+        toggleModels(showModels);
+    }
 }
 
 void GLFWView::toggle3DExtrusions(bool visible) {
     show3DExtrusions = visible;
     addFillExtrusionLayer(map->getStyle(), show3DExtrusions);
+}
+
+void GLFWView::toggleModels(bool visible) {
+    showModels = visible;
+    addModelLayer(map->getStyle(), showModels);
 }
 
 void GLFWView::toggleCustomSource() {
