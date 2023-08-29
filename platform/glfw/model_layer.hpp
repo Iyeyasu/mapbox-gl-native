@@ -6,7 +6,9 @@
 #include <mbgl/gl/types.hpp>
 #include <mbgl/gl/uniform.hpp>
 #include <mbgl/platform/gl_functions.hpp>
+#include <mbgl/util/geo.hpp>
 #include <mbgl/util/mat4.hpp>
+#include <mbgl/util/tile_coordinate.hpp>
 
 #include <vector>
 
