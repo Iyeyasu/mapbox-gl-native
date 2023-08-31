@@ -11,7 +11,9 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/platform/glfw/settings_json.cpp
     ${PROJECT_SOURCE_DIR}/platform/glfw/test_writer.cpp
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/map/map_snapshotter.cpp
-    ${PROJECT_SOURCE_DIR}/platform/glfw/model_layer.cpp
+    ${PROJECT_SOURCE_DIR}/platform/glfw/model_layer/model_layer.cpp
+    ${PROJECT_SOURCE_DIR}/platform/glfw/model_layer/tinyobj/tinyobj_importer.cpp
+    ${PROJECT_SOURCE_DIR}/platform/glfw/model_layer/tinyobj/vertex_index_cache.cpp
 )
 
 set_property(

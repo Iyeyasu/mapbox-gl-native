@@ -1,5 +1,7 @@
 #pragma once
 
+#include "tinyobj/tinyobj_importer.hpp"
+
 #include <mbgl/gl/attribute.hpp>
 #include <mbgl/gl/custom_layer.hpp>
 #include <mbgl/gl/defines.hpp>
@@ -14,35 +16,37 @@
 
 namespace custom {
 
-using GLuint = mbgl::platform::GLuint;
-using GLfloat = mbgl::platform::GLfloat;
-
+// A custom layer for rendering a 3D model
 class ModelLayer final : public mbgl::style::CustomLayerHost {
 public:
+    ModelLayer(const std::string& objectFile);
+
+    // mbgl::style::CustomLayerHost overrides
     void initialize() override;
     void render(const mbgl::style::CustomLayerRenderParameters&) override;
     void contextLost() override;
     void deinitialize() override;
 
 private:
-    struct Mesh final {
-        std::vector<uint32_t> indices{};
-        std::vector<GLfloat> vertices{};
-        std::vector<GLfloat> normals{};
-        GLuint indexBuffer{};
-        GLuint vertexBuffer{};
-        GLuint normalBuffer{};
-    };
-
+    // A struct for holding model transform, CPU mesh data, and the GPU mesh buffers
     struct Model final {
+        mbgl::mat4 transform{};
         Mesh mesh{};
-        mbgl::mat4 modelMatrix{};
+
+        // GPU data
+        mbgl::platform::GLuint indexBuffer{};
+        mbgl::platform::GLuint vertexBuffer{};
     };
 
     void createProgram();
-    void createMeshes();
     void destroyProgram();
-    void destroyMeshes();
+    void createModel();
+    void destroyModel();
+
+    // Model importing
+    TinyobjImporter m_objImporter{};
+    std::string m_objectFile{};
+    Model m_model{};
 
     // Shader program
     mbgl::gl::ProgramID m_program{};
@@ -52,9 +56,6 @@ private:
     // Attributes and uniforms
     mbgl::gl::AttributeLocation m_posAttribute{};
     mbgl::gl::AttributeLocation m_normAttribute{};
-    mbgl::gl::UniformLocation m_mpvUniform{};
-
-    // Data
-    std::vector<Model> m_models{};
+    mbgl::gl::UniformLocation m_mvpMatrixUniform{};
 };
 }

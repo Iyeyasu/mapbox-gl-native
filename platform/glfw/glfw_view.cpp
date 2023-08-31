@@ -3,7 +3,7 @@
 #include "glfw_renderer_frontend.hpp"
 #include "ny_route.hpp"
 #include "test_writer.hpp"
-#include "model_layer.hpp"
+#include "model_layer/model_layer.hpp"
 
 #include <mbgl/annotation/annotation.hpp>
 #include <mbgl/gfx/backend.hpp>
@@ -107,7 +107,7 @@ void addFillExtrusionLayer(mbgl::style::Style &style, bool visible) {
     style.addLayer(std::move(extrusionLayer));
 }
 
-void addModelLayer(mbgl::style::Style &style, bool visible) {
+void addModelLayer(mbgl::style::Style &style, bool visible, const std::string& objectFile) {
     using namespace mbgl::style;
     using namespace mbgl::style::expression::dsl;
 
@@ -116,7 +116,7 @@ void addModelLayer(mbgl::style::Style &style, bool visible) {
         return;
     }
 
-    auto modelLayer = std::make_unique<CustomLayer>("3d-models", std::make_unique<custom::ModelLayer>());
+    auto modelLayer = std::make_unique<CustomLayer>("3d-models", std::make_unique<custom::ModelLayer>(objectFile));
     style.addLayer(std::move(modelLayer));
 }
 } // namespace
@@ -253,6 +253,10 @@ GLFWView::~GLFWView() {
 void GLFWView::setMap(mbgl::Map *map_) {
     map = map_;
     map->addAnnotationImage(makeImage("default_marker", 22, 22, 1));
+}
+
+void GLFWView::setObjectFile(const std::string& objectFile_) {
+    objectFile = objectFile_;
 }
 
 void GLFWView::setRenderFrontend(GLFWRendererFrontend* rendererFrontend_) {
@@ -1012,7 +1016,7 @@ void GLFWView::toggle3DExtrusions(bool visible) {
 
 void GLFWView::toggleModels(bool visible) {
     showModels = visible;
-    addModelLayer(map->getStyle(), showModels);
+    addModelLayer(map->getStyle(), showModels, objectFile);
 }
 
 void GLFWView::toggleCustomSource() {

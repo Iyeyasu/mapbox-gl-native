@@ -32,6 +32,8 @@ public:
 
     void setMap(mbgl::Map*);
 
+    void setObjectFile(const std::string&);
+
     void setRenderFrontend(GLFWRendererFrontend*);
 
     mbgl::gfx::RendererBackend& getRendererBackend();
@@ -115,6 +117,7 @@ private:
     std::unique_ptr<GLFWBackend> backend;
 
     std::string testDirectory = ".";
+    std::string objectFile = "";
 
     double freeCameraDemoPhase = -1;
     mbgl::TimePoint freeCameraDemoStartTime;

@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
     args::ValueFlag<std::string> backendValue(argumentParser, "backend", "Rendering backend", {"backend"});
     args::ValueFlag<std::string> styleValue(argumentParser, "URL", "Map stylesheet", {'s', "style"});
     args::ValueFlag<std::string> cacheDBValue(argumentParser, "file", "Cache database file name", {'c', "cache"});
+    args::ValueFlag<std::string> objectFileValue(argumentParser, "object file", "Object file to display", {'v', "objectFile"});
     args::ValueFlag<double> lonValue(argumentParser, "degrees", "Longitude", {'x', "lon"});
     args::ValueFlag<double> latValue(argumentParser, "degrees", "Latitude", {'y', "lat"});
     args::ValueFlag<double> zoomValue(argumentParser, "number", "Zoom level", {'z', "zoom"});
@@ -83,6 +84,7 @@ int main(int argc, char *argv[]) {
     const bool benchmark = benchmarkFlag ? args::get(benchmarkFlag) : false;
     std::string style = styleValue ? args::get(styleValue) : "";
     const std::string cacheDB = cacheDBValue ? args::get(cacheDBValue) : "/tmp/mbgl-cache.db";
+    const std::string objectFile = objectFileValue ? args::get(objectFileValue) : "";
 
     // sigint handling
     struct sigaction sigIntHandler;
@@ -125,6 +127,7 @@ int main(int argc, char *argv[]) {
                   mbgl::MapOptions().withSize(view->getSize()).withPixelRatio(view->getPixelRatio()), resourceOptions);
 
     backend.setMap(&map);
+    backend.setObjectFile(objectFile);
 
     if (!style.empty() && style.find("://") == std::string::npos) {
         style = std::string("file://") + style;
