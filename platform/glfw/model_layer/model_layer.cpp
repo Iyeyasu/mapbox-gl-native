@@ -112,8 +112,7 @@ bool checkCompileStatus(GLuint shader) {
 }
 
 ModelLayer::ModelLayer(const std::string& objectFile) :
-    m_objectFile(objectFile)
-{
+    m_objectFile(objectFile) {
 }
 
 void ModelLayer::initialize() {
@@ -125,10 +124,8 @@ void ModelLayer::render(const mbgl::style::CustomLayerRenderParameters& paramete
     // Ensure transparency is on
     MBGL_CHECK_ERROR(glEnable(GL_BLEND));
 
-    // Ensure depth testing but no writes
-    MBGL_CHECK_ERROR(glEnable(GL_DEPTH_TEST));
-    MBGL_CHECK_ERROR(glDepthMask(GL_FALSE));
-    MBGL_CHECK_ERROR(glDepthFunc(GL_LEQUAL));
+    // Disable depth testing
+    MBGL_CHECK_ERROR(glDisable(GL_DEPTH_TEST));
 
     // Ensure correct culling
     MBGL_CHECK_ERROR(glDisable(GL_CULL_FACE));
@@ -204,11 +201,10 @@ void ModelLayer::createModel() {
     destroyModel();
 
     // Import the mesh for the model
-    if (!m_objImporter.importMesh(m_objectFile, m_model.mesh))
-    {
+    if (!m_objImporter.importMesh(m_objectFile, m_model.mesh)) {
         // If importing fails, draw a humble triangle
         m_model.mesh.indices = { 0, 1, 2 };
-        m_model.mesh.positions = { {0, 1, 0}, {1, -1, 0}, {-1, -1, 0} };
+        m_model.mesh.positions = { {0, 0, 3}, {3, 0, -3}, {-3, 0, -3} };
         m_model.mesh.normals = { {0, 1, 0}, {0, 1, 0}, {0, 1, 0} };
     }
 
