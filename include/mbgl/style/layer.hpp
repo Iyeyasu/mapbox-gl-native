@@ -124,7 +124,7 @@ public:
     // Create a layer, copying all properties except id and paint properties from this layer.
     virtual std::unique_ptr<Layer> cloneRef(const std::string& id) const = 0;
 
-    
+
     void setObserver(LayerObserver*);
 
     // For use in SDK bindings, which store a reference to a platform-native peer

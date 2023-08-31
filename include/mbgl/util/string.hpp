@@ -1,7 +1,9 @@
 #pragma once
 
-#include <string>
+#include <cstdint>
 #include <cstdlib>
+#include <exception>
+#include <string>
 #include <type_traits>
 
 // Polyfill needed by Qt when building for Android with GCC

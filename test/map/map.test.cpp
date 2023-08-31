@@ -197,11 +197,11 @@ TEST(Map, LatLngBoundsToCameraWithBearing) {
 
 TEST(Map, LatLngBoundsToCameraWithBearingPitchAndPadding) {
     MapTest<> test;
-    
+
     test.map.jumpTo(CameraOptions().withCenter(LatLng { 40.712730, -74.005953 }).withZoom(16.0));
-    
+
     LatLngBounds bounds = LatLngBounds::hull({15.68169,73.499857}, {53.560711, 134.77281});
-    
+
     CameraOptions virtualCamera = test.map.cameraForLatLngBounds(bounds, {}, 35, 20);
     ASSERT_TRUE(bounds.contains(*virtualCamera.center));
     EXPECT_NEAR(*virtualCamera.zoom, 13.66272, 1e-5);
@@ -236,9 +236,9 @@ TEST(Map, LatLngsToCamera) {
 
 TEST(Map, LatLngsToCameraWithBearingAndPitch) {
     MapTest<> test;
-    
+
     std::vector<LatLng> latLngs{{ 40.712730, 74.005953 }, {15.68169,73.499857}, {30.82678, 83.4082}};
-    
+
     CameraOptions virtualCamera = test.map.cameraForLatLngs(latLngs, {}, 23, 20);
     EXPECT_NEAR(virtualCamera.bearing.value_or(0), 23.0, 1e-5);
     EXPECT_NEAR(virtualCamera.zoom.value_or(0), 3.04378, 1e-5);
@@ -1289,7 +1289,7 @@ TEST(Map, PrefetchDeltaOverrideCustomSource) {
     };
 
     auto layer = test.map.getStyle().removeLayer("custom");
-    std::move(test.map.getStyle().removeSource("custom"));
+    test.map.getStyle().removeSource("custom");
     test.map.getStyle().addLayer(std::move(layer));
     test.map.getStyle().addSource(makeCustomSource());
     test.runLoop.run();
